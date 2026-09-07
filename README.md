@@ -22,3 +22,14 @@ IPv4: 158.160.224.83
 | **Процессы** | `node_procs_running`, `node_procs_blocked`, `node_forks_total`
 | **Системные сервисы** | `node_systemd_unit_state`, `node_systemd_units`
 | **Доступность exporter** | `up`
+
+### Observability endopoint
+
+`/actuator/prometheus` - метрики в формате Prometheus
+`/actuator/metrics` - доступные метрики
+`/actuator/health/liveness` - жив ли сервис
+`/actuator/health/readiness` - готов ли сервис принимать трафик
+
+### Проверка метрик приложения
+
+`curl http://<app-host>:9090/actuator/prometheus`
