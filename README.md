@@ -33,3 +33,7 @@ IPv4: 158.160.224.83
 ### Проверка метрик приложения
 
 `curl http://<app-host>:9090/actuator/prometheus`
+
+### Prometheus web interface
+
+`http://84.201.147.72:9090`
