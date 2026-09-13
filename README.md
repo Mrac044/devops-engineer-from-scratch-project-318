@@ -37,3 +37,9 @@ IPv4: 158.160.224.83
 ### Prometheus web interface
 
 `http://84.201.147.72:9090`
+*Закрыт от внешнего доступа, для доступа к monitoring используйте grafana*
+
+### Grafana web interface
+
+`http://84.201.147.72:3000`
+Grafana login: `admin`

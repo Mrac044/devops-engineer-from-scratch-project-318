@@ -37,3 +37,4 @@ out/
 .vscode/
 *.db
 AGENTS.md
+vault_pass.txt

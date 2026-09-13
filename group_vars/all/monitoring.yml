@@ -1,0 +1,51 @@
+# Prometheus configs
+
+scrape_interval: 15s
+evaluation_interval: 30s
+scrape_timeout: 14s
+
+application_server_ipv4: 158.160.224.83
+monitoring_server_ipv4: 84.201.147.72
+actuator_port: 9090
+node_port: 9100
+auth_basic_user: monitoring
+
+prometheus_conf_path: "/etc/prometheus/prometheus.yml"
+prometheus_rules_path: "/etc/prometheus/rules"
+prometheus_data_path: "/var/lib/bulletin_board_prometheus"
+prometheus_password_path: "/etc/prometheus/monitoring_password.txt"
+private_ip_monitoring: "10.130.0.18"
+private_ip_application: "10.130.0.22"
+monitoring_docker_subnet: "172.30.0.0/16"
+
+
+prometheus_scrape_jobs:
+  - name: prometheus-self
+    targets:
+      - "localhost:9090"
+  - name: app-prometheus
+    metrics_path: /actuator/prometheus
+    basic_auth: true
+    targets:
+      - "{{ private_ip_application }}:{{ actuator_port }}"
+  - name: nodes
+    targets:
+      - "{{ private_ip_application }}:{{ node_port }}"
+      - "host.docker.internal:{{ node_port }}"
+
+# Grafana configs
+grafana_data_path: "/var/lib/bulletin_board_grafana"
+grafana_provisioning_file_path: "/etc/grafana/provisioning/datasources/prometheus.yml"
+# prometheus_scrape_jobs:
+#   - name: prometheus-self
+#     targets:
+#       - "localhost:9090"
+#   - name: app-prometheus
+#     metrics_path: /actuator/prometheus
+#     basic_auth: true
+#     targets:
+#       - "{{ application_server_ipv4 }}:{{ actuator_port }}"
+#   - name: nodes
+#     targets:
+#       - "{{ application_server_ipv4 }}:{{ node_port }}"
+#       - "{{ monitoring_server_ipv4 }}:{{ node_port }}"
