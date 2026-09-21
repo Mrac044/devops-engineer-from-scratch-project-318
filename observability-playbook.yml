@@ -1,7 +1,7 @@
 - hosts: monitoring  
 
   vars:
-    prometheus_template_path: "{{ playbook_dir }}/services/prometheus/prometheus.yml.j2"
+    prometheus_conf_source_path: "{{ playbook_dir }}/services/prometheus/prometheus.yml.j2"
     prometheus_rules_source_path: "{{ playbook_dir }}/services/prometheus/rules"
     grafana_provisioning_source_path: "{{ playbook_dir }}/services/grafana/grafana_provisioning.yml.j2"
 
@@ -40,22 +40,38 @@
     - name: Allow grafana port
       community.general.ufw:
         rule: allow
-        port: 3000
+        port: "{{ grafana_port }}"
+        proto: tcp
+      become: yes
+
+    - name: Allow promtail port
+      community.general.ufw:
+        rule: allow
+        port: "{{ promtail_port }}"
+        proto: tcp
+        from_ip: "{{ private_ip_application }}"
+      become: yes
+
+    - name: Allow loki port
+      community.general.ufw:
+        rule: allow
+        port: "{{ loki_port }}"
+        from_ip: "{{ private_ip_application }}"
         proto: tcp
       become: yes
 
     - name: Allow prometheus port to app server
       community.general.ufw:
         rule: allow
-        port: 9090
+        port: "{{ prometheus_port }}"
         proto: tcp
         from_ip: "{{ private_ip_application }}"
       become: yes
 
-    - name: Allow node_exporter to docker prometheus
+    - name: Allow node_exporter ports
       community.general.ufw:
         rule: allow
-        port: 9100
+        port: "{{ node_port }}"
         proto: tcp
         from_ip: "{{ monitoring_docker_subnet }}"
       become: yes
@@ -83,9 +99,14 @@
         ipam_config:
           - subnet: "{{ monitoring_docker_subnet }}"
 
-    - name: Install observability Node Exporter
+    - name: Install observability node_exporter
       import_role: 
         name: "node_exporter"
+      become: yes
+
+    - name: Install observability loki
+      import_role: 
+        name: "loki"
       become: yes
 
     - name: Create prometheus configuration directory
@@ -135,7 +156,7 @@
 
     - name: Update prometheus configuration
       ansible.builtin.template:
-        src: "{{ prometheus_template_path }}"
+        src: "{{ prometheus_conf_source_path }}"
         dest: "{{ prometheus_conf_path }}"
         mode: "0644"
         owner: root
@@ -207,4 +228,12 @@
           - "{{ grafana_provisioning_file_path }}:/etc/grafana/provisioning/datasources/prometheus.yml:ro"
         env:
           GF_SECURITY_ADMIN_PASSWORD: "{{ grafana_admin_password }}"
+          GF_SMTP_ENABLED: "true"
+          GF_SMTP_HOST: "smtp.mail.ru:465"
+          GF_SMTP_USER: "{{ admin_email }}"
+          GF_SMTP_PASSWORD: "{{ smtp_password }}"
+          GF_SMTP_FROM_ADDRESS: "{{ admin_email }}"
+          GF_SMTP_FROM_NAME: "Grafana"
+          GF_SMTP_STARTTLS_POLICY: "MandatoryStartTLS"
       no_log: yes
+
