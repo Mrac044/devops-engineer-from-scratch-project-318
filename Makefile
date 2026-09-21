@@ -13,7 +13,7 @@ setup-roles:
 	ansible-galaxy install -r requirements.yml --force
 
 lint:
-	ansible-playbook -i inventory.ini playbook.yml --vault-password-file ./vault_pass.txt  --syntax-check
+	ansible-playbook -i inventory.ini application-playbook.yml --vault-password-file ./vault_pass.txt  --syntax-check
 	@echo "---------------"
 	ansible-playbook -i inventory.ini observability-playbook.yml --vault-password-file ./vault_pass.txt --syntax-check
 
@@ -26,7 +26,7 @@ smoke:
 	ansible monitoring -i inventory.ini -m shell -a "curl -fsS http://127.0.0.1:{{ grafana_port }}/api/health" --vault-password-file ./vault_pass.txt
 
 deploy:
-	ansible-playbook -i inventory.ini playbook.yml --vault-password-file ./vault_pass.txt
+	ansible-playbook -i inventory.ini application-playbook.yml --vault-password-file ./vault_pass.txt
 
 observ:
 	ansible-playbook -i inventory.ini observability-playbook.yml --vault-password-file ./vault_pass.txt
