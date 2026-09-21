@@ -1,13 +1,11 @@
 apiVersion: 1
 
 datasources:
-  - name: Prometheus
-    type: prometheus
+{% for datasource in grafana_datasources %}
+  - name: "{{ datasource.name }}"
+    type: "{{ datasource.type }}"
     access: proxy
-    url: http://bulletin-board-prometheus:9090
-    isDefault: true
-    editable: false
-    jsonData:
-      timeInterval: 15s
-      queryTimeout: 60s
-      httpMethod: POST
+    url: "{{ datasource.url }}"
+    isDefault: {{ datasource.is_default | lower }}
+    editable: {{ datasource.editable | lower }}
+{% endfor %}
