@@ -1,9 +1,9 @@
 - hosts: monitoring  
 
   vars:
-    prometheus_conf_source_path: "{{ playbook_dir }}/services/prometheus/prometheus.yml.j2"
-    prometheus_rules_source_path: "{{ playbook_dir }}/services/prometheus/rules"
-    grafana_provisioning_source_path: "{{ playbook_dir }}/services/grafana/grafana_provisioning.yml.j2"
+    prometheus_conf_source_path: "{{ playbook_dir }}/../services/prometheus/prometheus.yml.j2"
+    prometheus_rules_source_path: "{{ playbook_dir }}/../services/prometheus/rules"
+    grafana_provisioning_source_path: "{{ playbook_dir }}/../services/grafana/grafana_provisioning.yml.j2"
 
   handlers:
     - name: Restart prometheus container
