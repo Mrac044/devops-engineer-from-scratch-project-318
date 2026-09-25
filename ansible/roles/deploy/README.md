@@ -1,7 +1,7 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+Deploying bulletin-board app and services to application server
 
 Requirements
 ------------

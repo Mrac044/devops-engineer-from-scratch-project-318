@@ -1,7 +1,7 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+Install promtail as a docker container on observability server
 
 Requirements
 ------------
